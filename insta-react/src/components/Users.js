@@ -2,85 +2,50 @@ import React, {Component} from 'react';
 import User from './User';
 import InstaService from '../services/instaservice';
 import ErrorMessage from './ErrorMessage';
+import Spinner from './Spinner';
 
 export default class Users extends Component {
     InstaService = new InstaService();
     state = {
-        posts: [],
-        error: false
+        users: [],
+        error: false,
+        loading: true
     }
 
     componentDidMount() {
-        this.updatePosts();
+        this.updateUsers();
     }
 
-    updatePosts() {
-        this.InstaService.getAllPosts()
-        .then(this.onPostsLoaded)
+    updateUsers() {
+        this.InstaService.getAllUsers()
+        .then(this.onUsersLoaded)
         .catch(this.onError)
     }
 
-    onPostsLoaded = (posts) => {
+    onUsersLoaded = (users) => {
         this.setState({
-            posts,
-            error: false
+            users,
+            error: false,
+            loading: false
         })
     }
 
     onError = (err) => {
         this.setState({
-            error: true
+            error: true,
+            loading: false
         })
-    }
-
-    // renderItems(arr) {
-    //     return arr.map( (i) => {
-    //         const {name, altname, photo, src, alt, descr, id} = i;
-
-    //         return (
-    //             <div key={id} className="post">
-    //                 <User 
-    //                     src={photo}
-    //                     alt={altname}
-    //                     name={name}
-    //                 />
-    //                 <img src={src} alt={alt}></img>
-    //                 <div className="post__name">
-    //                     {name}
-    //                 </div>
-    //                 <div className="post__descr">
-    //                     {descr}
-    //                 </div>
-    //             </div>
-    //         )
-    //     })
-    // }
-
-    // render() {
-    //     const {error, posts} = this.state;
-    //     if (error) {
-    //         return <ErrorMessage />
-    //     }
-
-    //     const items = this.renderItems(posts);
-        
-    //     return (
-    //         <div className="left">
-    //             {items}
-    //        </div>
-    //     )
-    // }
-
+    }   
 
     renderItems(arr) {
         return arr.map( (i) => {
-            const {name, src, alt} = i;
-
+            const {name, photo, altname, id} = i;
             return (                
                 <User 
-                    src={src}
-                    alt={alt}
+                    src={photo}
+                    alt={altname}
                     name={name}
+                    key={id}
                     min
                 />                
             )
@@ -88,20 +53,24 @@ export default class Users extends Component {
     }
     
     render() {  
-        const {error, posts} = this.state;
+        const {error, users, loading} = this.state;
 
         if (error) {
             return <ErrorMessage />
-        }        
+        }
+        
+        if (loading) {
+            return <Spinner />
+        }
 
-        const items = this.renderItems(posts);
+        const items = this.renderItems(users);
 
         return (
             <div className="right">
                 <User 
                     src="https://codecondo.com/wp-content/uploads/2019/04/dsefrsgw.jpg"
-                    alt="Steve"
-                    name="Steve_Jobs"
+                    alt="steve"
+                    name="steve_jobs"
                 />
 
                 
